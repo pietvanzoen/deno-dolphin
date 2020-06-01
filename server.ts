@@ -1,19 +1,45 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
-import GithubAPI from "./src/github-api.ts";
+import {
+  green,
+  cyan,
+  bold,
+  yellow,
+} from "https://deno.land/std@0.54.0/fmt/colors.ts";
+import { renderTemplate } from "./src/render-template.ts";
 
-const github = new GithubAPI(
-  { privateToken: config()["GITHUB_PRIVATE_TOKEN"] },
-);
+import { Application } from "https://deno.land/x/oak/mod.ts";
 
-const repo = github.repo("pietvanzoen/updates");
+const app = new Application();
 
-try {
+// Logger
+app.use(async (ctx, next) => {
+  await next();
+  const rt = ctx.response.headers.get("X-Response-Time");
   console.log(
-    await repo.createFile("test/hello-world-2.md", {
-      message: "test commit",
-      content: "# hi there",
-    }),
+    `${green(ctx.request.method)} ${cyan(ctx.request.url.pathname)} - ${
+      bold(
+        String(rt),
+      )
+    }`,
   );
-} catch (e) {
-  console.error(e);
-}
+});
+
+app.use(async (ctx, next) => {
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  ctx.response.headers.set("X-Response-Time", `${ms}ms`);
+});
+
+app.use(async (ctx) => {
+  ctx.response.body = await renderTemplate("form", { message: "hello world" });
+});
+
+app.addEventListener("listen", ({ hostname, port }) => {
+  console.log(
+    bold("Start listening on ") + yellow(`${hostname}:${port}`),
+  );
+});
+
+await app.listen({ port: 8000 });
+console.log(bold("Finished."));
