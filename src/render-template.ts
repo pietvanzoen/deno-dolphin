@@ -13,7 +13,7 @@ export async function renderTemplate(
   templateName: string,
   data = {},
 ): Promise<string> {
-  const layout = await getTemplate(resolveTemplatePath("layout"));
+  const layout = await getTemplate(resolveTemplatePath("_layout"));
   const t = await getTemplate(resolveTemplatePath(templateName));
   return layout.render({ body: t.render(data) });
 }
