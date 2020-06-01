@@ -1,9 +1,9 @@
 import {
   dirname,
   fromFileUrl,
-  resolve,
-} from "https://deno.land/std/path/mod.ts";
-import { Template } from "https://deno.land/x/tiny_templates/mod.ts";
+  pathResolve,
+  TinyTemplate,
+} from "../deps.ts";
 
 const DIRNAME = dirname(fromFileUrl(import.meta.url));
 const cache = new Map();
@@ -18,15 +18,15 @@ export async function renderTemplate(
   return layout.render({ body: t.render(data) });
 }
 
-async function getTemplate(templatePath: string): Promise<Template> {
+async function getTemplate(templatePath: string): Promise<TinyTemplate> {
   if (cache.has(templatePath)) {
     return cache.get(templatePath);
   }
-  const t = new Template(decoder.decode(await Deno.readFile(templatePath)));
+  const t = new TinyTemplate(decoder.decode(await Deno.readFile(templatePath)));
   cache.set(templatePath, t);
   return t;
 }
 
 function resolveTemplatePath(templateName: string) {
-  return resolve(DIRNAME, "./templates", `${templateName}.tmpl.html`);
+  return pathResolve(DIRNAME, "./templates", `${templateName}.tmpl.html`);
 }
