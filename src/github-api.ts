@@ -1,13 +1,13 @@
-import { base64encode } from './base64.ts'
+import { base64encode } from "./base64.ts";
 import APIClient, { Headers } from "./api-client.ts";
 
 interface CreateFileData {
-  message: string,
-  content: string,
+  message: string;
+  content: string;
   committer?: {
-    name: string,
-    email: string
-  }
+    name: string;
+    email: string;
+  };
 }
 
 class ReposAPI {
@@ -15,7 +15,9 @@ class ReposAPI {
   private repo: string;
   private api: APIClient;
 
-  constructor({owner, repo, api}: { owner: string, repo: string, api: APIClient }) {
+  constructor(
+    { owner, repo, api }: { owner: string; repo: string; api: APIClient },
+  ) {
     this.owner = owner;
     this.repo = repo;
     this.api = api;
@@ -25,16 +27,14 @@ class ReposAPI {
     const path = `/repos/${this.owner}/${this.repo}/contents/${filePath}`;
     return this.api.put(path, {
       ...data,
-      content: base64encode(data.content)
+      content: base64encode(data.content),
     });
   }
-
 }
 
 interface GithubAPIConfig {
-  privateToken?: string
+  privateToken?: string;
 }
-
 
 class GithubAPI {
   private api: APIClient;
@@ -53,11 +53,9 @@ class GithubAPI {
   }
 
   repo(repoPath: string) {
-    const [owner, repo] = repoPath.split('/');
+    const [owner, repo] = repoPath.split("/");
     return new ReposAPI({ owner, repo, api: this.api });
   }
 }
-
-
 
 export default GithubAPI;
