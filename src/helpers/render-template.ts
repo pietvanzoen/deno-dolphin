@@ -3,7 +3,7 @@ import {
   fromFileUrl,
   pathResolve,
   TinyTemplate,
-} from "../deps.ts";
+} from "../../deps.ts";
 
 const DIRNAME = dirname(fromFileUrl(import.meta.url));
 const cache = new Map();
@@ -28,5 +28,9 @@ async function getTemplate(templatePath: string): Promise<TinyTemplate> {
 }
 
 function resolveTemplatePath(templateName: string) {
-  return pathResolve(DIRNAME, "./templates", `${templateName}.tmpl.html`);
+  return pathResolve(
+    Deno.cwd(),
+    "./src/templates",
+    `${templateName}.tmpl.html`,
+  );
 }
