@@ -1,6 +1,6 @@
 
 develop:
-	denon run --allow-read --allow-net server.ts
+	denon run --allow-read --allow-net main.ts
 
 start:
 	deno run --allow-read --allow-net main.ts
