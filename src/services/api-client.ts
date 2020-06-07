@@ -33,7 +33,7 @@ class APIClient {
     method: httpMethod,
     path: string,
     data = {},
-  ): Promise<ResponseJSON | Response> {
+  ): Promise<ResponseJSON> {
     const { baseUrl, headers } = this.config;
     const url = new URL(path, baseUrl);
     const request = new Request(url.href, {
@@ -43,9 +43,9 @@ class APIClient {
     });
     const response = await fetch(request);
     if (response.status > 299) {
-      throw response;
+      throw response as Response;
     }
-    return response.json();
+    return response.json() as ResponseJSON;
   }
 }
 

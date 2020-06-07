@@ -1,3 +1,5 @@
+import "https://deno.land/x/dotenv/load.ts";
+
 import { Logger } from "./src/helpers/logger.ts";
 import { start } from "./src/app.ts";
 

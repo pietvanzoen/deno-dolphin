@@ -1,7 +1,10 @@
 import { Context, Router } from "../deps.ts";
 import { renderTemplate } from "./helpers/render-template.ts";
+import { GithubUpdater } from "./updaters/github.ts";
+import { Update } from "./updaters/updater.ts";
 
 export function routerInit(): Router {
+  const githubUpdater = new GithubUpdater();
   const router = new Router();
   router
     .get("/", async (ctx: Context) => {
@@ -13,13 +16,30 @@ export function routerInit(): Router {
           form: ["application/x-www-form-urlencoded"],
         },
       });
-      ctx.response.body = await renderTemplate(
-        "form",
-        {
-          content: "submitted!\n" +
-            JSON.stringify(getFormValues(result.value), null, 2),
-        },
-      );
+      const { content } = getFormValues(result.value);
+      const data: Update = {
+        timestamp: new Date(),
+        content,
+      };
+      try {
+        const resp = await githubUpdater.create(data);
+        ctx.response.body = await renderTemplate(
+          "success",
+          {
+            githubUrl: resp.content.html_url,
+          },
+        );
+      } catch (error) {
+        const errorJSON = await error.json();
+        ctx.response.status = error.status;
+        ctx.response.body = await renderTemplate(
+          "form",
+          {
+            content,
+            error: JSON.stringify(errorJSON, null, 2),
+          },
+        );
+      }
     });
 
   return router;

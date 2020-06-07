@@ -1,9 +1,9 @@
 
 develop:
-	denon run --allow-read --allow-net main.ts
+	denon run --allow-read --allow-net --allow-env main.ts
 
 start:
-	deno run --allow-read --allow-net main.ts
+	deno run --allow-read --allow-net --allow-env main.ts
 
 test:
 	deno test

@@ -17,3 +17,5 @@ export {
 export { organ } from "https://deno.land/x/organ/mod.ts";
 import Logger from "https://deno.land/x/logger/logger.ts";
 export { Logger };
+
+export { slugify } from "https://deno.land/x/slugify/mod.ts";

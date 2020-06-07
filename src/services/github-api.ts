@@ -1,4 +1,4 @@
-import { base64encode } from "./base64.ts";
+import { base64encode } from "../helpers/base64.ts";
 import APIClient, { Headers } from "./api-client.ts";
 
 interface CreateFileData {
